@@ -22,17 +22,14 @@
   
   <tbody>
 
-  @php
-  $i = 1;
+    @php
+    $i = 1;
     @endphp
 
     @foreach ($categories as $category)
     <tr>
       <th scope="row">{{$i++}}</th>
-
-      <td>{{$category->category_name}}
-
-      </td>
+      <td>{{$category->category_name}}</td>
       <td>{{$category->user_id}}</td>
       <td>{{$category->created_at}}</td>
     </tr>
