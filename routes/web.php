@@ -14,11 +14,12 @@ use App\Http\Controllers\CategoryController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+// route for landing page
 Route::get('/', function () {
     return view('welcome');
 });
 
+//route for jetstream auth
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -30,8 +31,12 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/category' , function(){
-    return view('admin.category.category');
-})->name('AllCat');
+//route for viewing category page
+Route::get('/all/category', [CategoryController::class, 'Index'])->name('display.category');
 
-Route::get('/all/category', [CategoryController::class, 'index'])->name('category');
+//route for adding new category
+Route::post('/category/add', [CategoryController::class, 'AddCat'])->name('insert.category');
+//route for editing existing category
+Route::get('/category/edit/{id}', [CategoryController::class, 'Edit']);
+//route for updating categories
+Route::post('/category/update/{id}', [CategoryController::class, 'Update'])->name('update.category');
