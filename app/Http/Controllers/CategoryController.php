@@ -2,46 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Category;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Categories;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class CategoryController extends Controller
 {
-    public function index(){
-        $categories = Category::latest()->paginate('5');
-        return view ('admin.category.category', compact('categories'));
+    public function index() {
+        $categories = Categories::latest()->paginate('5');
+        $trashCat = Categories::onlyTrashed()->latest()->paginate('5');
+        return view('admin.category.category', compact('categories', 'trashCat'));
     }
 
-    //function for adding category
-    public function AddCat(Request $request)
-    {
-        // Validate the request data
+    public function create(Request $request) {
+
         $validated = $request->validate([
-            'category_name' => 'required|unique:categories| max:255',
+            'category_name' => 'required|max:255',
         ]);
 
-        //contents to be displayed
-        Category::create([
+        Categories::create([
+
             'category_name' => $request->category_name,
             'user_id' => Auth::user()->id,
             'created_at' => Carbon::now()
         ]);
-        return redirect()->back()->with('success', 'New Category Added');
+
+        return redirect()->back()->with('success','Category Inserted Successfully');
     }
 
     public function Edit($id){
-        $categories = Category::find($id);
-        return view ('admin.category.editCategory', compact('categories'));
+        $categories = Categories::find($id);
+        return view('admin.category.edit', compact('categories'));
     }
 
-    public function Update (Request $request, $id){
-        $update = Category::find($id)->update([
-            'category_name' => $request->category_name,
+    public function Update(Request $request, $id) {
+        $update = Categories::find($id)->update([
+            'category_name'=> $request->category_name,
             'user_id' => Auth::user()->id
         ]);
-        return Redirect ()->route('display.category')->with('success', 'Updated Successfulyy');
+
+        return Redirect()->route('category')->with('success', 'Updated Successfully');
+    }
+
+
+    public function RemoveCat($id){
+        $remove = Categories::find($id)->delete();
+        return redirect()->back()->with('success','Category Removed Successfully');
+    }
+
+    public function RestoreCat($id){
+        $restore = Categories::withTrashed()->find($id)->restore();
+        return redirect()->back()->with('success','Category Restored Successfully');
+    }
+
+    public function DeleteCat($id){
+        $delete = Categories::onlyTrashed()->find($id)->forceDelete();
+        return redirect()->back()->with('success','Category Deleted Successfully');
     }
 }
