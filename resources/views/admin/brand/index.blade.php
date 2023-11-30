@@ -114,7 +114,7 @@
                                         <tr>
                                             <th scope="row">{{$i++}}</th> 
                                             <td>{{ $trash->brand_name }}</td>
-                                            <td><img src={{ asset($trash->brand_image)}} alt="" style="width: 60px; height: 40px"></td>
+                                            <td><img src={{ asset($trash->brand_image)}} alt="" style="width: 50px; height: 70px"></td>
                                             <td>{{ $trash->deleted_at->diffForHumans() }}</td>
                                             <td>
                                                 <a href="{{url('brand/restore/'.$trash->id)}}" class="btn btn-info">Restore</a>
